@@ -21,7 +21,17 @@ const facts = [
   { label: 'Projects Completed', value: '10+' },
 ]
 
-const interests = ['UI/UX Design', 'Photography', 'Coffee Brewing', 'Reading UX Books','Human-Centered Design', 'Design Thinking', 'User Behavior & Psychology', 'Digital Product Research', 'Researching User Pain Points']
+const interests = [
+  'UI/UX Design', 
+  'Photography', 
+  'Coffee Brewing', 
+  'Reading UX Books',
+  'Human-Centered Design', 
+  'Design Thinking', 
+  'User Behavior & Psychology', 
+  'Digital Product Research', 
+  'Researching User Pain Points'
+  ]
 </script>
 
 <template>
@@ -146,7 +156,26 @@ const interests = ['UI/UX Design', 'Photography', 'Coffee Brewing', 'Reading UX 
           <div :class="['text-[10px] tracking-widest uppercase font-medium mb-4', isDark ? 'text-zinc-500' : 'text-zinc-500']">Toolbox</div>
           <div class="flex flex-wrap gap-2">
             <span
-              v-for="tool in ['Figma', 'FigJam', 'Wireframing', 'Prototyping', 'User Flow', 'User Research', 'Usability Testing', 'Design Systems', 'Information Architecture', 'Accessibility Design', 'Notion', 'GitHub', 'VS Code', 'Vue.js', 'Tailwind CSS','HTML', 'CSS', 'JavaScript']"
+              v-for="tool in [
+                'Figma', 
+                'FigJam', 
+                'Wireframing', 
+                'Prototyping', 
+                'User Flow', 
+                'User Research', 
+                'Usability Testing', 
+                'Design Systems', 
+                'Information Architecture', 
+                'Accessibility Design', 
+                'Notion', 
+                'GitHub', 
+                'VS Code', 
+                'Vue.js', 
+                'Tailwind CSS',
+                'HTML', 
+                'CSS', 
+                'JavaScript'
+                ]"
               :key="tool"
               :class="[
                 'px-3 py-2 text-xs rounded-sm border font-medium',
