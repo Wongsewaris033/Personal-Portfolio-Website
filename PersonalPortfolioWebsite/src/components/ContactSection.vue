@@ -17,20 +17,42 @@ onMounted(() => {
 onUnmounted(() => observer?.disconnect())
 
 const form = ref({ name: '', email: '', message: '' })
+const errors = ref({ name: '', email: '', message: '' })
+const touched = ref({ name: false, email: false, message: false })
 const submitted = ref(false)
 
+function validateEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+}
+
+function validate() {
+  errors.value.name    = !form.value.name.trim()    ? 'Full name is required.' : ''
+  errors.value.email   = !form.value.email.trim()   ? 'Email is required.'
+                       : !validateEmail(form.value.email) ? 'Enter a valid email.' : ''
+  errors.value.message = !form.value.message.trim() ? 'Message is required.' : ''
+}
+
+function handleBlur(field) {
+  touched.value[field] = true
+  validate()
+}
+
 function handleSubmit() {
-  if (!form.value.name || !form.value.email || !form.value.message) return
+  touched.value = { name: true, email: true, message: true }
+  validate()
+  if (errors.value.name || errors.value.email || errors.value.message) return
   submitted.value = true
   form.value = { name: '', email: '', message: '' }
+  touched.value = { name: false, email: false, message: false }
+  errors.value  = { name: '', email: '', message: '' }
   setTimeout(() => (submitted.value = false), 5000)
 }
 
 const socialLinks = [
-  { label: 'GitHub', href: 'https://github.com/Wongsewaris033', icon: 'GH' },
-  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/wongsewaris-tumsud-02523840b/', icon: 'LI' },
-  { label: 'Facebook', href: 'https://www.facebook.com/wongsewaris.tumsud/', icon: 'FB' },
-  { label: 'Instagram', href: 'https://www.instagram.com/win_wwr/', icon: 'IG' }
+  { label: 'GitHub',    href: 'https://github.com/Wongsewaris033',                         icon: 'GH' },
+  { label: 'LinkedIn',  href: 'https://www.linkedin.com/in/wongsewaris-tumsud-02523840b/', icon: 'LI' },
+  { label: 'Facebook',  href: 'https://www.facebook.com/wongsewaris.tumsud/',              icon: 'FB' },
+  { label: 'Instagram', href: 'https://www.instagram.com/win_wwr/',                        icon: 'IG' },
 ]
 </script>
 
@@ -138,51 +160,94 @@ const socialLinks = [
           </div>
 
           <div class="flex flex-col gap-5">
+
             <!-- Name -->
             <div>
-              <label :class="['block text-[10px] tracking-widest uppercase mb-2', isDark ? 'text-zinc-500' : 'text-zinc-800']">Your Name</label>
+              <div class="flex items-center justify-between mb-2">
+                <label :class="['text-[10px] tracking-widest uppercase', isDark ? 'text-zinc-500' : 'text-zinc-800']">
+                  Your Name <span class="text-rose-400">*</span>
+                </label>
+                <transition name="err">
+                  <span v-if="touched.name && errors.name" class="text-[10px] text-rose-400">
+                    {{ errors.name }}
+                  </span>
+                </transition>
+              </div>
               <input
                 v-model="form.name"
                 type="text"
                 placeholder="Full Name"
+                @blur="handleBlur('name')"
                 :class="[
                   'w-full px-4 py-3 text-sm rounded-sm border outline-none transition-colors duration-200',
+                  touched.name && errors.name
+                    ? 'border-rose-400'
+                    : isDark ? 'border-zinc-700 focus:border-rose-400' : 'border-zinc-300 focus:border-rose-400',
                   isDark
-                    ? 'border-zinc-700 bg-zinc-800/60 text-zinc-100 placeholder-zinc-600 focus:border-rose-400'
-                    : 'border-zinc-300 bg-white text-zinc-900 placeholder-zinc-400 focus:border-rose-400'
+                    ? 'bg-zinc-800/60 text-zinc-100 placeholder-zinc-600'
+                    : 'bg-white text-zinc-900 placeholder-zinc-400'
                 ]"
               />
             </div>
+
             <!-- Email -->
             <div>
-              <label :class="['block text-[10px] tracking-widest uppercase mb-2', isDark ? 'text-zinc-500' : 'text-zinc-800']">Email Address</label>
+              <div class="flex items-center justify-between mb-2">
+                <label :class="['text-[10px] tracking-widest uppercase', isDark ? 'text-zinc-500' : 'text-zinc-800']">
+                  Email Address <span class="text-rose-400">*</span>
+                </label>
+                <transition name="err">
+                  <span v-if="touched.email && errors.email" class="text-[10px] text-rose-400">
+                    {{ errors.email }}
+                  </span>
+                </transition>
+              </div>
               <input
                 v-model="form.email"
                 type="email"
                 placeholder="name@example.com"
+                @blur="handleBlur('email')"
                 :class="[
                   'w-full px-4 py-3 text-sm rounded-sm border outline-none transition-colors duration-200',
+                  touched.email && errors.email
+                    ? 'border-rose-400'
+                    : isDark ? 'border-zinc-700 focus:border-rose-400' : 'border-zinc-300 focus:border-rose-400',
                   isDark
-                    ? 'border-zinc-700 bg-zinc-800/60 text-zinc-100 placeholder-zinc-600 focus:border-rose-400'
-                    : 'border-zinc-300 bg-white text-zinc-900 placeholder-zinc-400 focus:border-rose-400'
+                    ? 'bg-zinc-800/60 text-zinc-100 placeholder-zinc-600'
+                    : 'bg-white text-zinc-900 placeholder-zinc-400'
                 ]"
               />
             </div>
+
             <!-- Message -->
             <div>
-              <label :class="['block text-[10px] tracking-widest uppercase mb-2', isDark ? 'text-zinc-500' : 'text-zinc-800']">Message</label>
+              <div class="flex items-center justify-between mb-2">
+                <label :class="['text-[10px] tracking-widest uppercase', isDark ? 'text-zinc-500' : 'text-zinc-800']">
+                  Message <span class="text-rose-400">*</span>
+                </label>
+                <transition name="err">
+                  <span v-if="touched.message && errors.message" class="text-[10px] text-rose-400">
+                    {{ errors.message }}
+                  </span>
+                </transition>
+              </div>
               <textarea
                 v-model="form.message"
                 rows="4"
                 placeholder="Tell me about your project or opportunity..."
+                @blur="handleBlur('message')"
                 :class="[
                   'w-full px-4 py-3 text-sm rounded-sm border outline-none transition-colors duration-200 resize-none',
+                  touched.message && errors.message
+                    ? 'border-rose-400'
+                    : isDark ? 'border-zinc-700 focus:border-rose-400' : 'border-zinc-300 focus:border-rose-400',
                   isDark
-                    ? 'border-zinc-700 bg-zinc-800/60 text-zinc-100 placeholder-zinc-600 focus:border-rose-400'
-                    : 'border-zinc-300 bg-white text-zinc-900 placeholder-zinc-400 focus:border-rose-400'
+                    ? 'bg-zinc-800/60 text-zinc-100 placeholder-zinc-600'
+                    : 'bg-white text-zinc-900 placeholder-zinc-400'
                 ]"
               ></textarea>
             </div>
+
             <!-- Submit -->
             <button
               @click="handleSubmit"
@@ -190,6 +255,7 @@ const socialLinks = [
             >
               Send Message →
             </button>
+
           </div>
         </div>
 
@@ -197,3 +263,8 @@ const socialLinks = [
     </div>
   </section>
 </template>
+
+<style scoped>
+.err-enter-active, .err-leave-active { transition: opacity 0.2s, transform 0.2s; }
+.err-enter-from, .err-leave-to       { opacity: 0; transform: translateX(4px); }
+</style>
